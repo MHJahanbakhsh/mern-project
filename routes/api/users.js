@@ -1,14 +1,15 @@
 const express = require('express')
-const router = express.Router();
 const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
 const {check,validationResult} = require('express-validator');
 const User = require('../../models/users')
 const jwt = require('jsonwebtoken')
+const config = require('config')
 
 // @route   POST api/users
 // @desc    Register user
 // @access  Public
+const router = express.Router();
 router.post('/',[
     check('name','name is required').not().isEmpty(),
     check('email','Email is not valid').isEmail(),
@@ -52,8 +53,11 @@ router.post('/',[
                 id:user.id //as u recall, mongodb creates a _id for each record.but with mongoose we can access that via .id instead of ._id
             }
         }
+        jwt.sign(payload,config.get('jwtSecret'),{expiresIn:360000},(err,token)=>{
+            if(err)throw err;
+            res.json({token})
+        })
 
-        res.send('user registered')
     }catch(err){
         console.error(err.message)
         res.status(500).send(' Server Error')
