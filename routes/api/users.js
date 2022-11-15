@@ -1,4 +1,5 @@
 const express = require('express')
+const router = express.Router();
 const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
 const {check,validationResult} = require('express-validator');
@@ -9,7 +10,6 @@ const config = require('config')
 // @route   POST api/users
 // @desc    Register user
 // @access  Public
-const router = express.Router();
 router.post('/',[
     check('name','name is required').not().isEmpty(),
     check('email','Email is not valid').isEmail(),
